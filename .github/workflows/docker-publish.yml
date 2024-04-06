@@ -3,11 +3,6 @@ on:
   push:
     branches:
       - '*'
-    tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
-  pull_request:
-    branches:
-      - '*'
 jobs:
   build:
     name: Build & push docker image
@@ -17,28 +12,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Debug
-        run: |
-          echo "github.ref -> {{ github.ref }}"
  
-      - name: Docker metadata
-        id: metadata
-        uses: docker/metadata-action@v3
-        with:
-          images: ${{ env.IMG_NAME }}
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=raw,value={{sha}},enable=${{ github.ref_type != 'tag' }}
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: .
-          push: ${{ github.event.base_ref =='refs/heads/main' && github.ref_type == 'tag' && !startsWith(github.ref, 'refs/tags/v0.')}}
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.labels }}
+          tags: latest, ${{ github.run_number }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: abexamir/pghc
+          repository: abexamir/${{ env.IMG_NAME }}

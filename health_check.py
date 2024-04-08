@@ -13,7 +13,8 @@ SQL_QUERY = "SELECT pg_is_in_recovery()"
 
 class HealthCheckServer(BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path == '/is_master':
+        path = self.path.split('/')[-1]
+        if path == '/is_master':
             try:
                 # Connect to PostgreSQL
                 conn = psycopg2.connect(

@@ -24,4 +24,4 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: abexamir/pghc:latest
+          tags: abexamir/pghc:latest, abexamir/pghc:${{ github.sha }}, abexamir/pghc:${{ github.ref_name }}
